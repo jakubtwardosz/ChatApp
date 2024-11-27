@@ -16,4 +16,8 @@
     <ProjectReference Include="..\ChatApp.Core.Domain\ChatApp.Core.Domain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Controllers\" />
+  </ItemGroup>
+
 </Project>

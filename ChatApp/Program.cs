@@ -1,3 +1,4 @@
+using ChatApp.API.Extensions;
 using ChatApp.Core.Domain;
 using Microsoft.EntityFrameworkCore;
 
@@ -11,10 +12,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-var connectionString = configuration.GetConnectionString("DefaultConnection");
-
-builder.Services.AddDbContext<ChatDbContext>(options =>
-    options.UseSqlServer(connectionString));
+builder.Services.AddConfiguration(configuration);
 
 var app = builder.Build();
 
