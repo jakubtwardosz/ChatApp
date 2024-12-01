@@ -10,23 +10,33 @@ namespace ChatApp.API.Controllers
     [ApiController]
     public class AuthController : Controller
     {
-        private readonly IAuthService _userService;
+        private readonly IAuthService _authService;
+        private readonly ILogger<AuthController> _logger;
 
-        public AuthController(IAuthService userService)
+        public AuthController(IAuthService authService, ILogger<AuthController> logger)
         {
-            _userService = userService;
+            _authService = authService;
+            _logger = logger;
         }
 
         [HttpPut("register")]
-        public async Task<JsonResult> GetUser()
+        public async Task<IActionResult> Register([FromBody] RegisterUserDto registerUser)
         {
-            await _userService.RegisterUser(new RegisterUserDto
+            try
             {
-                Username = "tes1t",
-                Password = "tes2t"
-            });
-
-            return Json("User registered");
+                await _authService.RegisterUser(registerUser);
+                return Ok(new {message = "User registered successfully" });
+            }
+            catch (InvalidOperationException ex)
+            {
+                _logger.LogWarning(ex, $"Registration attempt failed: User already exist with login: {registerUser.Username}");
+                return Conflict(new { message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"An error occured during registration for user: {registerUser.Username}");
+                return StatusCode(500, "An unexpected error occured during registration");
+            }
         }
     }
 }
