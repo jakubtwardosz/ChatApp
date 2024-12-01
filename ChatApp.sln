@@ -1,9 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.12.35514.174 d17.12
+VisualStudioVersion = 17.12.35514.174
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChatApp.API", "ChatApp\ChatApp.API.csproj", "{64535D89-586D-43E6-BA85-AA7D3BBE63A1}"
+	ProjectSection(ProjectDependencies) = postProject
+		{1FE5BA20-8A61-48C8-AB10-31A0E2C22F2A} = {1FE5BA20-8A61-48C8-AB10-31A0E2C22F2A}
+		{CCBA1901-02B1-4877-BC13-61D12BAD977B} = {CCBA1901-02B1-4877-BC13-61D12BAD977B}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChatApp.Core.Domain", "ChatApp.Core.Domain\ChatApp.Core.Domain.csproj", "{B2DE1AEB-BC09-4114-8EC7-100F7E43DD08}"
 EndProject
