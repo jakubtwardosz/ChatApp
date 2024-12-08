@@ -26,7 +26,7 @@ namespace ChatApp.Core.Application.Services
         public AuthDto GenerateJwtToken(User user)
         {
             var claims = GetClaims(user);
-            var expiryDate = DateTime.Now.AddMinutes(Convert.ToDouble(_jwtSettingOption.ExpiryInMinutes));
+            var expiryDate = DateTime.UtcNow.AddMinutes(Convert.ToDouble(_jwtSettingOption.ExpiryInMinutes));
             var creds = GetCredentials();
 
             var token = new JwtSecurityToken(
