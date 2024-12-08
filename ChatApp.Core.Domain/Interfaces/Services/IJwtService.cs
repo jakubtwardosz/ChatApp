@@ -1,4 +1,5 @@
 ﻿using ChatApp.Core.Domain.Dtos;
+using ChatApp.Core.Domain.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,9 +8,8 @@ using System.Threading.Tasks;
 
 namespace ChatApp.Core.Domain.Interfaces.Services
 {
-    public interface IAuthService
+    public interface IJwtService
     {
-        Task<AuthDto> GetToken(LoginDto loginModel);
-        Task RegisterUser(RegisterUserDto registerUser);
+        AuthDto GenerateJwtToken(User user);
     }
 }

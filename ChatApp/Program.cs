@@ -15,6 +15,8 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddConfiguration(configuration);
 builder.Services.AddServices();
 
+builder.Services.AddOptions(configuration);
+
 var origin = configuration.GetValue<string>("Orgin") ?? throw new NullReferenceException("Origin is not set in configuration");
 builder.Services.AddCors(options =>
 {
@@ -43,6 +45,8 @@ app.UseCors("CorsPolicy");
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
+
+app.UseAuthentication();
 
 app.MapControllers();
 

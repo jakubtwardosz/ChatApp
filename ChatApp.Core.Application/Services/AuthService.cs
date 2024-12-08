@@ -12,11 +12,60 @@ namespace ChatApp.Core.Application.Services
     {
         private readonly IUserRepository _userRepository;
         private readonly ILogger<AuthService> _logger;
+        private readonly IJwtService _jwtService;
 
-        public AuthService(IUserRepository userRepository, ILogger<AuthService> logger)
+        public AuthService(IUserRepository userRepository, ILogger<AuthService> logger, IJwtService jwtService)
         {
             _logger = logger;
             _userRepository = userRepository;
+            _jwtService = jwtService;
+        }
+
+        public async Task<AuthDto> GetToken(LoginDto loginModel)
+        {
+            try
+            {
+                var user = await _userRepository.GetUserByLogin(loginModel.Username);
+
+                if (user == null)
+                {
+                    _logger.LogWarning($"User with login {loginModel.Username} not found");
+                    throw new InvalidOperationException("User with this login does not exist");
+                }
+
+                if (VerifyPassword(loginModel.Password, user.Password))
+                {
+                    var authData = _jwtService.GenerateJwtToken(user);
+
+                    return authData;
+                }
+                else
+                {
+                    throw new UnauthorizedAccessException("Invalid credentials");
+                }               
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Authentication failed for user: {loginModel.Username}");
+                throw new InvalidProgramException();
+            }
+        }
+
+        public bool VerifyPassword(string enteredPassword, string storedPassword)
+        {
+            var parts = storedPassword.Split(':');
+
+            if (parts.Length != 2)
+            {
+                throw new FormatException("Unexpected hash format. The stored hash should be in format 'salt:hashedPassword'");
+            }
+
+            var salt = Convert.FromBase64String(parts[0]);
+            var storedHashedPassword = parts[1];
+
+            var enteredHashedPassword = Hash(enteredPassword, salt);
+
+            return storedHashedPassword == enteredHashedPassword;
         }
 
         public async Task RegisterUser(RegisterUserDto registerUser)
