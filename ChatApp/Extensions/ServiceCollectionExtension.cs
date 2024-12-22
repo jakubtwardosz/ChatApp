@@ -27,13 +27,12 @@ namespace ChatApp.API.Extensions
         public static IServiceCollection AddServices(this IServiceCollection services)
         {
             services.AddScoped<IJwtService, JwtService>();
-
             services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<IChatService, ChatService>();
 
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IChatRepository, ChatRepository>();
-
+            services.AddSignalR();
             return services;
         }
 
@@ -59,7 +58,26 @@ namespace ChatApp.API.Extensions
                 options.RequireHttpsMetadata = false;
                 options.SaveToken = true;
                 options.TokenValidationParameters = GetTokenValidationParams(key);
+                options.Events = GetEvents();
             });
+        }
+
+        private static JwtBearerEvents GetEvents()
+        {
+            return new JwtBearerEvents
+            {
+                OnMessageReceived = context =>
+                {
+                    var accessToken = context.Request.Query["token"];
+                    var path = context.HttpContext.Request.Path;
+                    if (!string.IsNullOrEmpty(accessToken) &&
+                        (path.StartsWithSegments("/messageHub")))
+                    {
+                        context.Token = accessToken;
+                    }
+                    return Task.CompletedTask;
+                }
+            };
         }
 
         private static TokenValidationParameters GetTokenValidationParams(byte[] key)

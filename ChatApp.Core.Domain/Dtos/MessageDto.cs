@@ -13,5 +13,6 @@ namespace ChatApp.Core.Domain.Dtos
         public string MessageText { get; set; }
         public Guid ChatId { get; set; }
         public DateTime CreatedAt { get; set; }
+        public Guid SenderId { get; set; }
     }
 }

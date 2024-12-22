@@ -2,6 +2,9 @@
 using ChatApp.Core.Domain.Interfaces.Repositories;
 using ChatApp.Core.Domain.Interfaces.Services;
 using ChatApp.Core.Domain.Models;
+
+using ChatApp.Core.Domain.Consts;
+
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -22,6 +25,15 @@ namespace ChatApp.Core.Application.Services
             _logger = logger;
         }
 
+        public async Task<ChatDto> GetChatInfo(string chatName)
+        {
+            var chat = await _chatRepository.GetChatInfo(chatName);
+
+            var chatDto = ConvertToChatDto(chat);
+
+            return chatDto;
+        }
+
         public async Task<ChatDto> GetPaginatedChat(string chatName, int pageNumber, int pageSize)
         {
             var chat = await _chatRepository.GetChatWithMessages(chatName, pageNumber, pageSize);
@@ -29,6 +41,11 @@ namespace ChatApp.Core.Application.Services
             var chatDto = ConvertToChatDto(chat);
 
             return chatDto;
+        }
+
+        public Task SaveMessage(MessageDto messageDto)
+        {
+            throw new NotImplementedException();
         }
 
         private ChatDto ConvertToChatDto(Chat chat)

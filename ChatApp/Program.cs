@@ -1,5 +1,6 @@
 using ChatApp.API.Extensions;
 using ChatApp.Core.Domain;
+using ChatApp.API.Hubs;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -39,6 +40,7 @@ builder.Services.AddSwaggerGen(opt =>
     });
 });
 
+
 builder.Services.AddConfiguration(configuration);
 builder.Services.AddServices();
 builder.Services.AddOptions(configuration);
@@ -68,5 +70,6 @@ app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
 app.UseCors("CorsPolicy");
+app.MapHub<MessageHub>("/messageHub");
 app.MapControllers();
 app.Run();

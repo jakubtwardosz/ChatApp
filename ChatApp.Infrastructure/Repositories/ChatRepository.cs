@@ -23,6 +23,30 @@ namespace ChatApp.Infrastructure.Repositories
             _logger = logger;
         }
 
+        public async Task<Chat> GetChatInfo(string chatName)
+        {
+            try
+            {
+                _logger.LogInformation($"Fetching chat info for chat: {chatName}");
+
+                var chat = await _context.Chats.FirstOrDefaultAsync(c => c.Name == chatName);
+
+                if (chat == null)
+                {
+                    _logger.LogWarning($"Chat with name '{chatName}' not found.");
+                    throw new ChatNotFoundExeption(chatName);
+                }
+
+                _logger.LogInformation($"Chat info for '{chatName}' fetched successfully.");
+                return chat;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Error occurred while fetching chat info for '{chatName}'.");
+                throw;
+            }
+        }
+
         public async Task<Chat> GetChatWithMessages(string chatName, int pageNumber, int pageSize)
         {
             try
