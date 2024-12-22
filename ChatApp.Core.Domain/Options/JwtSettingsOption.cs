@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ChatApp.Core.Domain.Options
 {
-    public class JwtSettingOption
+    public class JwtSettingsOption
     {
         public string SecretKey { get; set; } = string.Empty;
 

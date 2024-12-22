@@ -16,9 +16,9 @@ namespace ChatApp.Core.Application.Services
 {
     public class JwtService : IJwtService
     {
-        private readonly JwtSettingOption _jwtSettingOption;
+        private readonly JwtSettingsOption _jwtSettingOption;
 
-        public JwtService(IOptions<JwtSettingOption> jwtSettingOption)
+        public JwtService(IOptions<JwtSettingsOption> jwtSettingOption)
         {
             _jwtSettingOption = jwtSettingOption.Value;
         }
@@ -26,7 +26,7 @@ namespace ChatApp.Core.Application.Services
         public AuthDto GenerateJwtToken(User user)
         {
             var claims = GetClaims(user);
-            var expiryDate = DateTime.UtcNow.AddMinutes(Convert.ToDouble(_jwtSettingOption.ExpiryInMinutes));
+            var expiryDate = DateTime.UtcNow.AddMinutes(Convert.ToDouble(_jwtSettingOption.ExpiryInMinutes)).AddHours(24);
             var creds = GetCredentials();
 
             var token = new JwtSecurityToken(

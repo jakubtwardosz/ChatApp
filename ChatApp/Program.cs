@@ -1,22 +1,22 @@
 using ChatApp.API.Extensions;
 using ChatApp.Core.Domain;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration;
 
-// Add services to the container.
-
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(opt =>
 {
     opt.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
         In = ParameterLocation.Header,
-        Description = "Please enter token",
+        Description = "Please enter JWT with Bearer prefix in the format: Bearer {token}",
         Name = "Authorization",
         Type = SecuritySchemeType.ApiKey,
         BearerFormat = "JWT",
@@ -30,8 +30,8 @@ builder.Services.AddSwaggerGen(opt =>
             {
                 Reference = new OpenApiReference
                 {
-                    Type = ReferenceType.SecurityScheme,
-                    Id = "Bearer"
+                    Id = "Bearer",
+                    Type = ReferenceType.SecurityScheme
                 }
             },
             new string[] {}
@@ -42,37 +42,31 @@ builder.Services.AddSwaggerGen(opt =>
 builder.Services.AddConfiguration(configuration);
 builder.Services.AddServices();
 builder.Services.AddOptions(configuration);
-var origin = configuration.GetValue<string>("Orgin") ?? throw new NullReferenceException("Origin is not set in configuration");
+
+var origin = configuration.GetValue<string>("Origin") ?? throw new NullReferenceException("Origin is not set in configuration");
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("CorsPolicy", builder =>
-        {
-            builder.WithOrigins(origin)
-
-                .AllowAnyHeader()
-                .AllowAnyMethod()
-                .SetIsOriginAllowed((host) => true)
-                .AllowCredentials();
-        });
+    {
+        builder.WithOrigins(origin)
+            .AllowAnyHeader()
+            .AllowAnyMethod()
+            .SetIsOriginAllowed((host) => true)
+            .AllowCredentials();
+    });
 });
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
-app.UseCors("CorsPolicy");
-
 app.UseHttpsRedirection();
 
-app.UseAuthorization();
-
 app.UseAuthentication();
-
+app.UseAuthorization();
+app.UseCors("CorsPolicy");
 app.MapControllers();
-
 app.Run();

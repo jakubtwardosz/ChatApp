@@ -24,20 +24,31 @@ namespace ChatApp.API.Extensions
             return services;
         }
 
+        public static IServiceCollection AddServices(this IServiceCollection services)
+        {
+            services.AddScoped<IJwtService, JwtService>();
+
+            services.AddScoped<IAuthService, AuthService>();
+            services.AddScoped<IChatService, ChatService>();
+
+            services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<IChatRepository, ChatRepository>();
+
+            return services;
+        }
+
         public static IServiceCollection AddOptions(this IServiceCollection services, IConfiguration configuration)
         {
-            services.Configure<JwtSettingOption>(options => configuration.GetSection(nameof(JwtSettingOption)).Bind(options));
+            services.Configure<JwtSettingsOption>(options => configuration.GetSection(nameof(JwtSettingsOption)).Bind(options));
             return services;
         }
 
         private static void AddCustomAuthentication(IServiceCollection services, IConfiguration configuration)
         {
-            var jwtSettings = configuration.GetSection(nameof(JwtSettingOption)).Get<JwtSettingOption>();
-
-            if (jwtSettings == null || string.IsNullOrEmpty(jwtSettings.SecretKey))
-                throw new ArgumentException("Secret Key is Empty");
-
-            var key = Encoding.ASCII.GetBytes(jwtSettings.SecretKey);
+            var jwtSettings = configuration.GetSection(nameof(JwtSettingsOption));
+            var secretKey = jwtSettings[nameof(JwtSettingsOption.SecretKey)];
+            if (secretKey == null) throw new ArgumentException("SecretKey is empty");
+            var key = Encoding.ASCII.GetBytes(secretKey);
 
             services.AddAuthentication(options =>
             {
@@ -45,12 +56,13 @@ namespace ChatApp.API.Extensions
                 options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
             }).AddJwtBearer(options =>
             {
+                options.RequireHttpsMetadata = false;
                 options.SaveToken = true;
-                options.TokenValidationParameters = GetTokenValidationParameters(key);
+                options.TokenValidationParameters = GetTokenValidationParams(key);
             });
         }
 
-        private static TokenValidationParameters GetTokenValidationParameters(byte[] key)
+        private static TokenValidationParameters GetTokenValidationParams(byte[] key)
         {
             return new TokenValidationParameters
             {
@@ -59,19 +71,10 @@ namespace ChatApp.API.Extensions
                 ValidateIssuer = false,
                 ValidateAudience = false,
                 ValidateLifetime = true,
-                ClockSkew = TimeSpan.FromSeconds(120)
+                ClockSkew = TimeSpan.Zero
             };
         }
 
-        public static IServiceCollection AddServices(this IServiceCollection services)
-        {
-            services.AddTransient<IUserRepository, UserRepository>();
-            services.AddTransient<IChatRepository, ChatRepository>();
-            services.AddTransient<IAuthService, AuthService>();
-            services.AddTransient<IChatService, ChatService>();
-            services.AddTransient<IJwtService, JwtService>();
 
-            return services;
-        }
     }
 }
