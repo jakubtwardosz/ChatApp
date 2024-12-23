@@ -1,8 +1,10 @@
 ﻿using ChatApp.Core.Application.Services;
 using ChatApp.Core.Domain;
+using ChatApp.Core.Domain.Interfaces.Producers;
 using ChatApp.Core.Domain.Interfaces.Repositories;
 using ChatApp.Core.Domain.Interfaces.Services;
 using ChatApp.Core.Domain.Options;
+using ChatApp.Core.Infrastucture.Producers;
 using ChatApp.Infrastructure.Repositories;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
@@ -30,8 +32,11 @@ namespace ChatApp.API.Extensions
             services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<IChatService, ChatService>();
 
+            services.AddScoped<IKafkaProducer, KafkaProducer>();
+
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IChatRepository, ChatRepository>();
+
             services.AddSignalR();
             return services;
         }
@@ -39,6 +44,7 @@ namespace ChatApp.API.Extensions
         public static IServiceCollection AddOptions(this IServiceCollection services, IConfiguration configuration)
         {
             services.Configure<JwtSettingsOption>(options => configuration.GetSection(nameof(JwtSettingsOption)).Bind(options));
+            services.Configure<KafkaOption>(options => configuration.GetSection(nameof(KafkaOption)).Bind(options));
             return services;
         }
 
