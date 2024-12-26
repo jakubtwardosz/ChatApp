@@ -42,7 +42,7 @@ namespace ChatApp.Core.Application.Services
                 else
                 {
                     throw new UnauthorizedAccessException("Invalid credentials");
-                }               
+                }
             }
             catch (Exception ex)
             {
@@ -92,7 +92,7 @@ namespace ChatApp.Core.Application.Services
 
         private string HashPassword(string password)
         {
-            byte[] salt = new byte[128/8];
+            byte[] salt = new byte[128 / 8];
 
             using (var rng = RandomNumberGenerator.Create())
             {

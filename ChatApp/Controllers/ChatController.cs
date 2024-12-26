@@ -22,7 +22,7 @@ namespace ChatApp.API.Controllers
 
         [HttpPost("GetPaginatedChat")]
         public async Task<IActionResult> GetPaginatedChat(string chatName, int pageNumber, int pageSize)
-        { 
+        {
             try
             {
                 var chat = await _chatService.GetPaginatedChat(chatName, pageNumber, pageSize);

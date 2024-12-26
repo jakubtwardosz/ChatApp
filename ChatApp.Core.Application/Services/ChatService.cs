@@ -1,18 +1,11 @@
-﻿using ChatApp.Core.Domain.Dtos;
+﻿using ChatApp.Core.Domain.Consts;
+using ChatApp.Core.Domain.Dtos;
+using ChatApp.Core.Domain.Interfaces.Producers;
 using ChatApp.Core.Domain.Interfaces.Repositories;
 using ChatApp.Core.Domain.Interfaces.Services;
 using ChatApp.Core.Domain.Models;
 using Confluent.Kafka;
-
-using ChatApp.Core.Domain.Consts;
-
 using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using ChatApp.Core.Domain.Interfaces.Producers;
 using System.Text.Json;
 
 namespace ChatApp.Core.Application.Services
@@ -50,7 +43,7 @@ namespace ChatApp.Core.Application.Services
 
         public async Task SaveMessage(MessageDto messageDto)
         {
-            await _kafkaProducer.ProduceAsync(Topic.Message, new Message<string,string>
+            await _kafkaProducer.ProduceAsync(Topic.Message, new Message<string, string>
             {
                 Key = messageDto.MessageId.ToString(),
                 Value = JsonSerializer.Serialize(messageDto)
@@ -73,7 +66,7 @@ namespace ChatApp.Core.Application.Services
                         CreatedAt = x.CreatedAt
                     })
                     .ToHashSet()
-            };  
+            };
             return chatDto;
         }
     }

@@ -8,7 +8,7 @@
             Id = Guid.NewGuid();
             Username = username;
             Password = password;
-            CreatedAt = DateTime.Now;   
+            CreatedAt = DateTime.Now;
         }
 
         public Guid Id { get; set; }

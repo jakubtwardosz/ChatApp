@@ -1,12 +1,9 @@
-﻿using ChatApp.Core.Domain;
+﻿using ChatApp.Core.Domain.Consts;
 using ChatApp.Core.Domain.Dtos;
-using ChatApp.Core.Domain.Consts;
-using ChatApp.Core.Domain.Interfaces.Repositories;
 using ChatApp.Core.Domain.Interfaces.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
 using System.Collections.Concurrent;
-using System.Text.Json;
 using System.Security.Claims;
 
 namespace ChatApp.API.Hubs

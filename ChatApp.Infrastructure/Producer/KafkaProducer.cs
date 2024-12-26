@@ -4,11 +4,6 @@ using ChatApp.Core.Domain.Options;
 using Confluent.Kafka;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ChatApp.Core.Infrastucture.Producers
 {

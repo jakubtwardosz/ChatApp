@@ -1,11 +1,6 @@
 using ChatApp.API.Extensions;
-using ChatApp.Core.Domain;
 using ChatApp.API.Hubs;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration;

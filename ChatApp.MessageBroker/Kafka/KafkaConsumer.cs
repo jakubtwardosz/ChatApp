@@ -4,14 +4,8 @@ using ChatApp.Core.Domain.Dtos;
 using ChatApp.Core.Domain.Models;
 using ChatApp.Core.Domain.Options;
 using Confluent.Kafka;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
-using System;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace ChatApp.MessageBroker.Kafka
 {

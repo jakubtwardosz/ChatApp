@@ -1,7 +1,5 @@
 ﻿using ChatApp.Core.Domain.Dtos;
-using ChatApp.Core.Domain.Interfaces.Repositories;
 using ChatApp.Core.Domain.Interfaces.Services;
-using ChatApp.Core.Domain.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ChatApp.API.Controllers
@@ -44,7 +42,7 @@ namespace ChatApp.API.Controllers
             try
             {
                 await _authService.RegisterUser(registerUser);
-                return Ok(new {message = "User registered successfully" });
+                return Ok(new { message = "User registered successfully" });
             }
             catch (InvalidOperationException ex)
             {
