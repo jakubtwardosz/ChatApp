@@ -2,6 +2,7 @@
 using ChatApp.Core.Domain.Interfaces.Repositories;
 using ChatApp.Core.Domain.Interfaces.Services;
 using ChatApp.Core.Domain.Models;
+using Confluent.Kafka;
 
 using ChatApp.Core.Domain.Consts;
 
@@ -11,6 +12,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ChatApp.Core.Domain.Interfaces.Producers;
+using System.Text.Json;
 
 namespace ChatApp.Core.Application.Services
 {
@@ -18,11 +21,13 @@ namespace ChatApp.Core.Application.Services
     {
         private readonly IChatRepository _chatRepository;
         private readonly ILogger<ChatService> _logger;
+        private readonly IKafkaProducer _kafkaProducer;
 
-        public ChatService(IChatRepository chatRepository, ILogger<ChatService> logger)
+        public ChatService(IChatRepository chatRepository, ILogger<ChatService> logger, IKafkaProducer kafkaProducer)
         {
             _chatRepository = chatRepository;
             _logger = logger;
+            _kafkaProducer = kafkaProducer;
         }
 
         public async Task<ChatDto> GetChatInfo(string chatName)
@@ -43,9 +48,13 @@ namespace ChatApp.Core.Application.Services
             return chatDto;
         }
 
-        public Task SaveMessage(MessageDto messageDto)
+        public async Task SaveMessage(MessageDto messageDto)
         {
-            throw new NotImplementedException();
+            await _kafkaProducer.ProduceAsync(Topic.Message, new Message<string,string>
+            {
+                Key = messageDto.MessageId.ToString(),
+                Value = JsonSerializer.Serialize(messageDto)
+            });
         }
 
         private ChatDto ConvertToChatDto(Chat chat)
